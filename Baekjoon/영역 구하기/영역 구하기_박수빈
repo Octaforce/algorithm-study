@@ -1,0 +1,85 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int m, n, k;
+    static int[][] graph;
+    static boolean[][] visited;
+    static int[] dx = {1, -1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        m = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        
+        graph = new int[m][n];
+        visited = new boolean[m][n];
+
+        for (int i = 0; i < m; i++) {
+            Arrays.fill(graph[i], 1);
+        }
+
+        for (int t = 0; t < k; t++) {
+            st = new StringTokenizer(br.readLine());
+            int l_x = Integer.parseInt(st.nextToken());
+            int l_y = Integer.parseInt(st.nextToken());
+            int r_x = Integer.parseInt(st.nextToken());
+            int r_y = Integer.parseInt(st.nextToken());
+            
+            for (int i = l_x; i < r_x; i++) {
+                for (int j = m - l_y - 1; j >= m - r_y; j--) {
+                    graph[j][i] = 0;
+                }
+            }
+        }
+        
+        ArrayList<Integer> areas = new ArrayList<>();
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (graph[i][j] == 1 && !visited[i][j]) {
+                    areas.add(bfs(i, j));
+                }
+            }
+        }
+        
+        Collections.sort(areas);
+        
+        System.out.println(areas.size());
+        for (int area : areas) {
+            System.out.print(area + " ");
+        }
+    }
+    
+    static int bfs(int x, int y) {
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{x, y});
+        visited[x][y] = true;
+        int areaSize = 1;
+        
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int nowX = current[0];
+            int nowY = current[1];
+            
+            for (int i = 0; i < 4; i++) {
+                int nextX = nowX + dx[i];
+                int nextY = nowY + dy[i];
+                
+                if (nextX >= 0 && nextX < m && nextY >= 0 && nextY < n) {
+                    if (!visited[nextX][nextY] && graph[nextX][nextY] == 1) {
+                        visited[nextX][nextY] = true;
+                        queue.add(new int[]{nextX, nextY});
+                        areaSize++;
+                    }
+                }
+            }
+        }
+        
+        return areaSize;
+    }
+}
