@@ -3,7 +3,8 @@ const github = require('@actions/github');
 
 async function run() {
   try {
-    const token = process.env.GH_TOKEN;
+    // const token = process.env.GH_TOKEN;
+    const token = process.env.GITHUB_TOKEN; // GH_TOKEN 대신 GITHUB_TOKEN 사용
     if (!token) {
       throw new Error('GitHub token is not provided');
     }
